@@ -2,13 +2,13 @@
 using Microsoft.Maui.Controls;
 
 namespace HesapMakinesi
-
 {
     public partial class MainPage : ContentPage
     {
-        private string _currentInput = ""; 
+        private string _currentInput = "";
         private string _firstOperand = "";
-        private string _operator = "";     
+        private string _operator = "";
+        private double _memory = 0; // Memory değişkeni
 
         public MainPage()
         {
@@ -25,7 +25,7 @@ namespace HesapMakinesi
             UpdateCurrentOperationLabel();
         }
 
-       
+        // Operatör butonuna tıklama işlemi
         private void OnOperatorClicked(object sender, EventArgs e)
         {
             var button = sender as Button;
@@ -33,11 +33,11 @@ namespace HesapMakinesi
 
             _firstOperand = _currentInput;
             _operator = button.Text;
-            _currentInput = ""; 
+            _currentInput = "";
             UpdateCurrentOperationLabel();
         }
 
-      
+        // Eşittir butonuna tıklama işlemi
         private void OnEqualClicked(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(_firstOperand) || string.IsNullOrEmpty(_currentInput) || string.IsNullOrEmpty(_operator))
@@ -75,10 +75,26 @@ namespace HesapMakinesi
             _firstOperand = "";
             _operator = "";
             UpdateResultLabel();
-            CurrentOperationLabel.Text = ""; 
+            CurrentOperationLabel.Text = "";
         }
 
-        
+        // Bellekten çağırma
+        private void OnMemoryRecallClicked(object sender, EventArgs e)
+        {
+            _currentInput = _memory.ToString();
+            UpdateResultLabel();
+        }
+
+        // Belleğe kaydetme
+        private void OnMemorySaveClicked(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(_currentInput))
+            {
+                _memory = double.Parse(_currentInput);
+            }
+        }
+
+        // Temizleme işlemi
         private void OnClearClicked(object sender, EventArgs e)
         {
             _currentInput = "";
@@ -88,7 +104,7 @@ namespace HesapMakinesi
             CurrentOperationLabel.Text = "";
         }
 
-        
+        // Geri alma işlemi
         private void OnBackspaceClicked(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(_currentInput))
@@ -98,13 +114,13 @@ namespace HesapMakinesi
             }
         }
 
-        
+        // Sonucu güncelleme
         private void UpdateResultLabel()
         {
             ResultLabel.Text = string.IsNullOrEmpty(_currentInput) ? "0" : _currentInput;
         }
 
-        
+        // İşlem güncelleme
         private void UpdateCurrentOperationLabel()
         {
             CurrentOperationLabel.Text = $"{_firstOperand} {_operator} {_currentInput}";
